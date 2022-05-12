@@ -1,0 +1,45 @@
+' Gambas class file
+
+
+
+Public Sub form_Close()
+  
+  
+  
+End
+
+Public Sub Form_Open()
+Dim f1 As File
+f1 = Open "/tmp/shellRemote" For Create 
+Close f1
+f1 = Open "/tmp/shellRemote.out" For Create 
+Close f1
+f1.Save("/tmp/shellRemote", "")
+f1.Save("/tmp/shellRemote.out", "")
+  TextArea1.Text = ""
+
+End
+
+Public Sub Button1_Click()
+Dim f1 As File
+Dim a As String 
+Dim aa As String 
+f1 = Open "/tmp/shellRemote" For Create 
+Close f1
+  f1.Save("/tmp/shellRemote", TextBox4.Text & "\n")
+  Shell "netcat " & TextBox1.Text & " " & TextBox2.Text & " < /tmp/shellRemote > /tmp/shellRemote.out"
+  Sleep 1
+  f1 = Open "/tmp/shellRemote.out" For Input
+  aa = ""
+  While 1
+    Line Input #f1, a
+    aa = aa & "\n" & a
+    If Eof(f1) Then Break
+  Wend
+  Close #f1
+  TextArea1.Text = aa
+  TextArea1.refresh()
+  
+End
+
+
